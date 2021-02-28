@@ -14,3 +14,27 @@ There may sometimes be a high number of data points on the map, making it look c
 The extent of the points within these clusters can be seen by the user if they place their cursor over the point.
 
 ![Cluster 2](Project2cluster2.png)
+
+Clicking on a cluster or manually zooming in will provide more identifiable areas as clusters or individual points.
+
+![Cluster 3](Project2cluster3.png)
+
+In some scenarios, one location may have multiple building permits.
+
+![Cluster 4](Project2cluster4.png)
+
+If a multiple permit location is clicked the points will expand, allowing for easily vision and selection for the user.
+
+![Cluster 5](Project2cluster5.png)
+
+Finally, information such as the permits: 
+
+Issue Date, 
+Working Class Group, 
+Contractor Name,
+Community Name,
+and Original Address
+
+Will appear for each point when clicked as a popup menu.
+
+![Cluster 6](Project2cluster6.png)
