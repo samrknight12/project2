@@ -9,4 +9,8 @@ When a User is enters the site they are brought to a map centered at Calgary's C
 ## The Output
 There may sometimes be a high number of data points on the map, making it look cluttered. To fix this, high density point areas are clustered at certain zoom levels.
 
+![Cluster 1](Project2cluster1.png)
 
+The extent of the points within these clusters can be seen by the user if they place their cursor over the point.
+
+![Cluster 2](Project2cluster2.png)
