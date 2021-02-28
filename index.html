@@ -1,0 +1,113 @@
+<html>
+<head>
+    <title> main </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <!--  jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <h2> Choose Date Range of Building Permit</h2>
+
+  <div class="container">
+    <form onsubmit="GetDates(); return false;">
+      <label>From Date</label>
+      <input type="date" id="fromDate">
+      <br></br>
+      <label>To Date  </label>
+      <input type="date" id="toDate">
+      <br></br>
+      <input class="btn btn-primary" type="submit" value="Submit">
+  </form>
+  </div>
+  <br></br>
+  <div id="mapid"></div>
+  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+  <script>
+
+    let api='https://data.calgary.ca/resource/c2es-76ed.geojson?';
+
+    async function GetDates(){ //i dont know what "async" does but a video said to do it
+      //these two lines get values from form
+      let date1=document.querySelector('#fromDate').value;
+      let date2=document.querySelector('#toDate').value;
+      //if the date is the same
+      if (date1==date2){
+        //this is the API url
+        let url=api+'issueddate='+date1;
+        //Next 2 lines request api using "fetch()" then make the response json
+        const response = await fetch(url);
+        let data = await response.json();
+        //this is just a log to the console to check if the API is working, not neccessary
+        console.log(url);
+        // ****** Reference: stackexchange user: guilvinec, found at: https://gis.stackexchange.com/questions/346104/popup-with-leaflet-markercluster-in-leaflet-map
+        var markers = L.markerClusterGroup();
+        const Geomark= L.geoJSON(data, {
+            onEachFeature : function(feature, layer){
+                var popupContent =  'Date Issued: '+feature.properties.issueddate+'<br></br>'+'Work Class Group: '+feature.properties.workclassgroup+'<br></br>'+'Contractor Name: '+feature.properties.contractorname+'<br></br>'+'Community Name: '+feature.properties.communityname+'<br></br>'+'Original Address: '+feature.properties.originaladdress;
+                layer.bindPopup(popupContent)
+            },
+        });
+        markers.addLayer(Geomark);
+        map.addLayer(markers);
+
+      }
+      //if the date is difference
+      if(date1!=date2){
+        let url=api+'$where=issueddate > '+ '\'' + date1 +'\''+' and issueddate < '+'\''+date2+'\'';
+        const response = await fetch(url);
+        let data = await response.json();
+        console.log(url);
+
+        // ****** Reference: stackexchange user: guilvinec, found at: https://gis.stackexchange.com/questions/346104/popup-with-leaflet-markercluster-in-leaflet-map
+        var markers = L.markerClusterGroup();
+        const Geomark= L.geoJSON(data, {
+            onEachFeature : function(feature, layer){
+                var popupContent =  'Date Issued: '+feature.properties.issueddate+'<br></br>'+'Work Class Group: '+feature.properties.workclassgroup+'<br></br>'+'Contractor Name: '+feature.properties.contractorname+'<br></br>'+'Community Name: '+feature.properties.communityname+'<br></br>'+'Original Address: '+feature.properties.originaladdress;
+                layer.bindPopup(popupContent)
+            },
+        });
+        markers.addLayer(Geomark);
+        map.addLayer(markers);
+    }
+  }
+
+
+
+    //All of this is in the leaflet tutorial page
+    //make map and center it at calgary city center with zoom of 9
+    var map = L.map('mapid').setView([51.0447, -114.0719], 9);
+    //var oms = new OverlappingMarkerSpiderfier(map);
+    //next three lines are a basemap for the map
+    const attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const tiles=L.tileLayer(tileUrl,{attribution});
+    // add the basemap tiles to map
+    tiles.addTo(map);
+    //popups for info
+    var popup=L.popup();
+    var popup = new L.Popup();
+    var markers = L.markerClusterGroup();
+  </script>
+</div>
+
+</body>
+</html>
